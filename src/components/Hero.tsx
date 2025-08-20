@@ -97,9 +97,12 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 1 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <button className="bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <a
+                href="#planes"
+                className="bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-center"
+                >
                 Ver Planes de Surf
-              </button>
+                </a>
               <button className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 backdrop-blur-sm border border-white/20">
                 Reservar Ahora
               </button>
