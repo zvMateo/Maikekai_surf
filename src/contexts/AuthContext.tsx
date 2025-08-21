@@ -20,8 +20,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false) // ✅ Iniciar en false
   const [profile, setProfile] = useState(null)
+  const [mounted, setMounted] = useState(false) // ✅ Control de hidratación
   const supabase = createClient()
 
   const refreshProfile = async () => {
@@ -35,26 +36,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         
         setProfile(profile)
       } catch (error) {
-        console.warn('Error refreshing profile:', error)
+        console.log('Error actualizando perfil:', error)
       }
     }
   }
 
   useEffect(() => {
+    setMounted(true) // ✅ Marcar como montado
+    
     if (!supabase) {
-      console.warn('⚠️  Supabase no configurado, usando modo desarrollo');
-      setLoading(false);
-      return;
+      console.log('🏄‍♂️ Supabase no configurado, usando modo desarrollo')
+      return
     }
 
     const getSession = async () => {
+      setLoading(true)
       try {
         const { data: { session } } = await supabase.auth.getSession()
         setSession(session)
         setUser(session?.user ?? null)
-        setLoading(false)
+        
+        if (session?.user) {
+          await refreshProfile()
+        }
       } catch (error) {
-        console.warn('Error getting session:', error)
+        console.log('🏄‍♂️ Error obteniendo sesión:', error)
+      } finally {
         setLoading(false)
       }
     }
@@ -66,7 +73,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
       setSession(session)
       setUser(session?.user ?? null)
-      setLoading(false)
       
       if (session?.user) {
         await refreshProfile()
@@ -76,15 +82,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     })
 
     return () => subscription.unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [supabase])
 
   useEffect(() => {
-    if (user) {
+    if (user && mounted) {
       refreshProfile()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [user, mounted])
 
   const signIn = async (email: string, password: string) => {
     if (!supabase) {
@@ -117,34 +121,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           },
         },
       })
-      
-      if (error) {
-        return { error }
-      }
-      
-      // Crear perfil manualmente (el trigger fue deshabilitado)
-      if (data.user && data.user.id) {
+
+      // Si el registro es exitoso, crear perfil manualmente
+      if (data.user && !error) {
         try {
           const { error: profileError } = await supabase
             .from('profiles')
-            .insert({
-              id: data.user.id,
-              email: email,
-              full_name: fullName
-            })
-          
+            .insert([
+              {
+                id: data.user.id,
+                email: data.user.email,
+                full_name: fullName,
+                created_at: new Date().toISOString(),
+              },
+            ])
+
           if (profileError) {
-            // Si el perfil ya existe, no es un error crítico
-            if (!profileError.message.includes('duplicate key')) {
-              console.warn('Error creando perfil:', profileError.message);
-            }
+            console.log('Perfil ya existe o error creando perfil:', profileError)
           }
         } catch (profileError) {
-          console.warn('Error en creación manual de perfil:', profileError);
+          console.log('Error creando perfil:', profileError)
         }
       }
-      
-      return { error: null }
+
+      return { error }
     } catch (error) {
       return { error }
     }
@@ -154,8 +154,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (supabase) {
       try {
         await supabase.auth.signOut()
+        setProfile(null)
       } catch (error) {
-        console.warn('Error signing out:', error)
+        console.log('Error cerrando sesión:', error)
       }
     }
   }
@@ -174,10 +175,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuth debe ser usado dentro de un AuthProvider')
   }
   return context
 }
