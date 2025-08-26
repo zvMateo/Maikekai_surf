@@ -141,6 +141,22 @@ setup-supabase.sh
 *.bak
 *.backup
 
+# Large files (GitHub limit is 100MB)
+*.sql
+*.dump
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Large video files (keep smaller ones for web)
+# *.mp4
+# *.avi
+# *.mov
+# *.wmv
+# *.flv
+# *.webm
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
