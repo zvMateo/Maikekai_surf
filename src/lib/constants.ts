@@ -47,6 +47,14 @@ export const ANIMATIONS = {
   VERY_SLOW: 0.8,
 } as const
 
+// Animation Defaults
+export const ANIMATION_DEFAULTS = {
+  duration: 0.6,
+  stagger: 0.1,
+  ease: "easeOut",
+  viewport: { once: true },
+} as const
+
 // Breakpoints (matching Tailwind)
 export const BREAKPOINTS = {
   SM: 640,

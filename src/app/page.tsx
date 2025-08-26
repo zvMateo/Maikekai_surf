@@ -2,11 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { Hero } from '@/components/features/hero'
-import BookingButtons from '@/components/BookingButtons'
-import Reviews from '@/components/Reviews'
+import { BookingButtons } from '@/components/features/booking'
+import { Reviews } from '@/components/features/reviews'
 import { SurfPlans } from '@/components/features/surf-plans'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
 import { ROUTES } from '@/lib/constants'
 
 export default function Home() {
@@ -17,12 +17,14 @@ export default function Home() {
   }
 
   const handleLearnMore = () => {
-    // Scroll to surf plans section
-    const surfPlansSection = document.getElementById('surf-plans')
-    if (surfPlansSection) {
-      surfPlansSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+    const planesSection = document.getElementById('planes')
+    if (planesSection) {
+      const headerHeight = 80
+      const elementPosition = planesSection.offsetTop - headerHeight
+      
+      window.scrollTo({
+        top: elementPosition,
+        behavior: 'smooth'
       })
     }
   }
@@ -30,16 +32,24 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Header />
-      <Hero 
-        onBookNow={handleBookNow}
-        onLearnMore={handleLearnMore}
-      />
-      <BookingButtons />
-      <div id="surf-plans">
+      <div id="inicio">
+        <Hero 
+          onBookNow={handleBookNow}
+          onLearnMore={handleLearnMore}
+        />
+      </div>
+      <div id="reservas">
+        <BookingButtons />
+      </div>
+      <div id="planes">
         <SurfPlans />
       </div>
-      <Reviews />
-      <Footer />
+      <div id="reseñas">
+        <Reviews />
+      </div>
+      <div id="contacto">
+        <Footer />
+      </div>
     </main>
   )
 }
