@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false) // ✅ Iniciar en false
   const [profile, setProfile] = useState(null)
   const [mounted, setMounted] = useState(false) // ✅ Control de hidratación
-  const supabase = createClient()
+  const supabase = typeof window !== 'undefined' ? createClient() : null
 
   const refreshProfile = async () => {
     if (user && supabase) {
