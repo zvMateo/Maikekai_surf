@@ -1,3 +1,11 @@
 {
-  "title": "Planes de Surf"
+  "plans": {
+    "title": "Planes de Surf"
+  },
+  "accommodation": {
+    "title": "Hospedaje"
+  },
+  "combos": {
+    "title": "Combos"
+  }
 }

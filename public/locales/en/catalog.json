@@ -1,3 +1,11 @@
 {
-  "title": "Surf Plans"
+  "plans": {
+    "title": "Surf Camps"
+  },
+  "accommodation": {
+    "title": "Accommodation"
+  },
+  "combos": {
+    "title": "Combos"
+  }
 }
