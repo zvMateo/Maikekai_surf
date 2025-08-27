@@ -1,8 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
-import './globals.css'
+import '../globals.css'
 import { AuthProvider } from '@/features/auth'
 import { PerformanceWidget } from '@/components/ui/PerformanceWidget'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
+import { notFound } from 'next/navigation'
+import { locales } from '@/i18n'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -58,13 +62,27 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export const dynamic = 'force-dynamic'
+
+export const generateStaticParams = async (): Promise<{ locale: string }[]> => {
+  return locales.map((locale) => ({ locale }))
+}
+
+export default async function RootLayout({
   children,
+  params: { locale },
 }: {
   children: React.ReactNode
+  params: { locale: string }
 }) {
+  if (!locales.includes(locale as any)) {
+    notFound()
+  }
+
+  const messages = await getMessages()
+
   return (
-    <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang={locale} className={`${inter.variable} ${poppins.variable}`}>
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -73,10 +91,12 @@ export default function RootLayout({
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body className={inter.className} suppressHydrationWarning={true}>
-        <AuthProvider>
-          {children}
-          <PerformanceWidget />
-        </AuthProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <AuthProvider>
+            {children}
+            <PerformanceWidget />
+          </AuthProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

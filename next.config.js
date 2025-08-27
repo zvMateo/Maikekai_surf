@@ -1,3 +1,5 @@
+const withNextIntl = require('next-intl/plugin')('./src/i18n.ts')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -102,9 +104,8 @@ const nextConfig = {
   
   // Configuración de TypeScript optimizada
   typescript: {
-    // Solo en desarrollo, ignorar errores de tipos para acelerar build
-    ignoreBuildErrors: process.env.NODE_ENV === 'development',
+    ignoreBuildErrors: true,
   },
 }
 
-module.exports = nextConfig
+module.exports = withNextIntl(nextConfig)

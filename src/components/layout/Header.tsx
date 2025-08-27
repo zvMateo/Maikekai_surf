@@ -8,19 +8,21 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { Button } from '@/components/ui/Button'
 import { useResponsive } from '@/hooks/useResponsive'
 import { ANIMATION_DEFAULTS, APP_CONFIG } from '@/lib/constants'
+import { useTranslations } from 'next-intl'
+import LanguageSwitcher from './LanguageSwitcher'
 
 interface NavItem {
   href: string
-  label: string
+  label: string // translation key
   isExternal?: boolean
 }
 
 const navigationItems: NavItem[] = [
-  { href: '#inicio', label: 'Inicio' },
-  { href: '#planes', label: 'Planes de Surf' },
-  { href: '#reservas', label: 'Reservas' },
-  { href: '#reseñas', label: 'Reseñas' },
-  { href: '#contacto', label: 'Contacto' },
+  { href: '#inicio', label: 'navigation.home' },
+  { href: '#planes', label: 'navigation.surfPlans' },
+  { href: '#reservas', label: 'navigation.bookings' },
+  { href: '#reseñas', label: 'navigation.reviews' },
+  { href: '#contacto', label: 'navigation.contact' },
 ]
 
 interface NavigationLinkProps {
@@ -68,13 +70,14 @@ interface UserMenuProps {
 
 function UserMenu({ isOpen, onClose }: UserMenuProps) {
   const { user, signOut, profile } = useAuth()
+  const t = useTranslations('common')
 
   if (!user) return null
 
   const userMenuItems = [
-    { href: '/dashboard', label: 'Mi Dashboard' },
-    { href: '/profile', label: 'Mi Perfil' },
-    { href: '/bookings', label: 'Mis Reservas' },
+    { href: '/dashboard', label: 'auth.dashboard' },
+    { href: '/profile', label: 'auth.profile' },
+    { href: '/bookings', label: 'auth.bookings' },
   ]
 
   return (
@@ -94,7 +97,7 @@ function UserMenu({ isOpen, onClose }: UserMenuProps) {
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
               onClick={onClose}
             >
-              {item.label}
+              {t(item.label)}
             </Link>
           ))}
           
@@ -104,7 +107,7 @@ function UserMenu({ isOpen, onClose }: UserMenuProps) {
               className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
               onClick={onClose}
             >
-              Administración
+              {t('auth.admin')}
             </Link>
           )}
           
@@ -118,7 +121,7 @@ function UserMenu({ isOpen, onClose }: UserMenuProps) {
             className="flex items-center space-x-2 w-full px-4 py-2 text-red-600 hover:bg-red-50 transition-colors text-left"
           >
             <LogOut className="h-4 w-4" />
-            <span>Cerrar Sesión</span>
+            <span>{t('auth.signOut')}</span>
           </button>
         </motion.div>
       )}
@@ -133,6 +136,7 @@ interface MobileMenuProps {
 
 function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const { user, signOut, profile } = useAuth()
+  const t = useTranslations('common')
 
   return (
     <AnimatePresence>
@@ -145,6 +149,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
           className="md:hidden mt-4 bg-white rounded-lg shadow-lg overflow-hidden"
         >
           <div className="py-4 space-y-4">
+            <div className="px-4"><LanguageSwitcher /></div>
             {navigationItems.map((item) => (
               <NavigationLink
                 key={item.href}
@@ -152,7 +157,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 onClick={onClose}
                 className="block px-4 py-2 hover:bg-primary-50"
               >
-                {item.label}
+                {t(item.label)}
               </NavigationLink>
             ))}
             
@@ -168,23 +173,23 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   onClick={onClose}
                   className="block px-4 py-2 hover:bg-primary-50"
                 >
-                  Mi Dashboard
+                  {t('auth.dashboard')}
                 </NavigationLink>
-                
+
                 <NavigationLink
                   href="/profile"
                   onClick={onClose}
                   className="block px-4 py-2 hover:bg-primary-50"
                 >
-                  Mi Perfil
+                  {t('auth.profile')}
                 </NavigationLink>
-                
+
                 <NavigationLink
                   href="/bookings"
                   onClick={onClose}
                   className="block px-4 py-2 hover:bg-primary-50"
                 >
-                  Mis Reservas
+                  {t('auth.bookings')}
                 </NavigationLink>
                 
                 {profile?.role === 'admin' && (
@@ -193,7 +198,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     onClick={onClose}
                     className="block px-4 py-2 hover:bg-primary-50"
                   >
-                    Administración
+                    {t('auth.admin')}
                   </NavigationLink>
                 )}
                 
@@ -204,7 +209,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   }}
                   className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors font-medium"
                 >
-                  Cerrar Sesión
+                  {t('auth.signOut')}
                 </button>
               </>
             ) : (
@@ -218,7 +223,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     onClose()
                   }}
                 >
-                  Iniciar Sesión
+                  {t('auth.signIn')}
                 </Button>
               </div>
             )}
@@ -250,6 +255,7 @@ export default function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const { user, profile } = useAuth()
   const { isMobile } = useResponsive()
+  const t = useTranslations('common')
 
   const closeMenus = () => {
     setIsMenuOpen(false)
@@ -265,9 +271,11 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-8">
             {navigationItems.map((item) => (
               <NavigationLink key={item.href} href={item.href}>
-                {item.label}
+                {t(item.label)}
               </NavigationLink>
             ))}
+
+            <LanguageSwitcher />
             
             {user ? (
               <div className="relative">
@@ -294,7 +302,7 @@ export default function Header() {
                 size="sm"
                 onClick={() => window.location.href = '/auth'}
               >
-                Iniciar Sesión
+                {t('auth.signIn')}
               </Button>
             )}
           </div>
