@@ -25,12 +25,15 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   metadataBase: new URL('https://maikekaisurf.com'),
   title: 'Maikekai Surf - Hotel y Escuela de Surf en Costa Rica',
-  description: 'Descubre Maikekai Surf, tu destino perfecto para aprender surf y hospedarte en Costa Rica. Ofrecemos clases de surf profesionales, alojamiento cómodo y la mejor experiencia tropical.',
-  keywords: 'surf, Costa Rica, hotel surf, clases surf, hospedaje, escuela surf, Maikekai',
+  description:
+    'Descubre Maikekai Surf, tu destino perfecto para aprender surf y hospedarte en Costa Rica. Ofrecemos clases de surf profesionales, alojamiento cómodo y la mejor experiencia tropical.',
+  keywords:
+    'surf, Costa Rica, hotel surf, clases surf, hospedaje, escuela surf, Maikekai',
   authors: [{ name: 'Maikekai Surf' }],
   openGraph: {
     title: 'Maikekai Surf - Hotel y Escuela de Surf en Costa Rica',
-    description: 'Tu destino perfecto para aprender surf y hospedarte en Costa Rica',
+    description:
+      'Tu destino perfecto para aprender surf y hospedarte en Costa Rica',
     url: 'https://maikekaisurf.com',
     siteName: 'Maikekai Surf',
     images: [
@@ -46,7 +49,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Maikekai Surf - Hotel y Escuela de Surf en Costa Rica',
-    description: 'Tu destino perfecto para aprender surf y hospedarte en Costa Rica',
+    description:
+      'Tu destino perfecto para aprender surf y hospedarte en Costa Rica',
     images: ['/og-image.jpg'],
   },
   robots: {
@@ -73,39 +77,65 @@ export const generateStaticParams = async (): Promise<{ locale: string }[]> => {
 
 export default async function RootLayout({
   children,
-  params: { locale },
+  params,
 }: {
   children: React.ReactNode
-  params: { locale: string }
+  params: Promise<{ locale: string }>
 }) {
+  const { locale } = await params
+
   if (!locales.includes(locale as any)) {
     notFound()
   }
 
   const messages = await getMessages()
 
-  return (
+  const clerkEnabled = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY)
+
+  const content = (
+    <CartProvider>
+      {children}
+      <PerformanceWidget />
+    </CartProvider>
+  )
+
+  const providers = clerkEnabled ? (
     <ClerkProvider>
-      <html lang={locale} className={`${inter.variable} ${poppins.variable}`}>
-        <head>
-          <link rel="icon" href="/favicon.ico" />
-          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-          <link rel="manifest" href="/site.webmanifest" />
-        </head>
-        <body className={inter.className} suppressHydrationWarning={true}>
-          <Seo />
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <AuthProvider>
-              <CartProvider>
-                {children}
-                <PerformanceWidget />
-              </CartProvider>
-            </AuthProvider>
-          </NextIntlClientProvider>
-        </body>
-      </html>
+      <AuthProvider>{content}</AuthProvider>
     </ClerkProvider>
+  ) : (
+    content
+  )
+
+  return (
+    <html lang={locale} className={`${inter.variable} ${poppins.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+      </head>
+      <body className={inter.className} suppressHydrationWarning={true}>
+        <Seo />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {providers}
+        </NextIntlClientProvider>
+      </body>
+    </html>
   )
 }

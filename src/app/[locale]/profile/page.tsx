@@ -39,7 +39,7 @@ export default function ProfilePage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <Link 
+          <Link
             href="/"
             className="flex items-center text-primary-600 hover:text-primary-700 transition-colors"
           >
@@ -69,9 +69,14 @@ export default function ProfilePage() {
               <h1 className="text-2xl font-bold text-gray-900">
                 {profile?.full_name || user.primaryEmailAddress?.emailAddress}
               </h1>
-              <p className="text-gray-600">{user.primaryEmailAddress?.emailAddress}</p>
+              <p className="text-gray-600">
+                {user.primaryEmailAddress?.emailAddress}
+              </p>
               <p className="text-sm text-gray-500">
-                Miembro desde {new Date(user.createdAt).toLocaleDateString('es-ES')}
+                Miembro desde{' '}
+                {user.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString('es-ES')
+                  : ''}
               </p>
             </div>
           </div>
@@ -108,7 +113,9 @@ export default function ProfilePage() {
           >
             <Calendar className="h-8 w-8 text-primary-600 mb-4 group-hover:scale-110 transition-transform" />
             <h3 className="text-xl font-semibold mb-2">Mis Reservas</h3>
-            <p className="text-gray-600">Ver y gestionar tus reservas de surf</p>
+            <p className="text-gray-600">
+              Ver y gestionar tus reservas de surf
+            </p>
           </Link>
 
           <Link

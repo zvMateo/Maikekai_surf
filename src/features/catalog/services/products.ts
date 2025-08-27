@@ -13,8 +13,13 @@ const fallbackProducts: Record<string, Record<string, Product[]>> = {
         type: 'camp',
         name: 'Surf Guru Camp',
         shortDescription: 'Intensive surf camp for all levels',
-        longDescription: 'Seven-day program with lodging, meals and surf lessons.',
-        highlights: ['6 nights lodging', '5 surf lessons', 'Equipment included'],
+        longDescription:
+          'Seven-day program with lodging, meals and surf lessons.',
+        highlights: [
+          '6 nights lodging',
+          '5 surf lessons',
+          'Equipment included',
+        ],
         price: 89900,
         currency: 'USD',
       },
@@ -52,8 +57,13 @@ const fallbackProducts: Record<string, Record<string, Product[]>> = {
         type: 'camp',
         name: 'Campamento Surf Guru',
         shortDescription: 'Campamento intensivo de surf para todos los niveles',
-        longDescription: 'Programa de siete días con hospedaje, comidas y clases de surf.',
-        highlights: ['6 noches de hospedaje', '5 clases de surf', 'Equipo incluido'],
+        longDescription:
+          'Programa de siete días con hospedaje, comidas y clases de surf.',
+        highlights: [
+          '6 noches de hospedaje',
+          '5 clases de surf',
+          'Equipo incluido',
+        ],
         price: 89900,
         currency: 'USD',
       },
@@ -108,7 +118,8 @@ const fallbackBundles: Record<string, Bundle[]> = {
       slug: 'surf-guru-ocean-view',
       name: 'Surf Guru + Habitación Vista al Mar',
       shortDescription: 'Campamento más habitación premium',
-      longDescription: 'Paquete que incluye Campamento Surf Guru y Habitación Vista al Mar.',
+      longDescription:
+        'Paquete que incluye Campamento Surf Guru y Habitación Vista al Mar.',
       highlights: ['7 días', 'Hospedaje con vista al mar'],
       price: 94900,
       currency: 'USD',
@@ -168,7 +179,7 @@ export const getProductsByType = unstable_cache(
       .select(
         `id, slug, sorting, product_types!inner(slug),
        product_translations!inner(locale, name, short_description, long_description, highlights),
-       product_prices(currency, unit_amount)`
+       product_prices(currency, unit_amount)`,
       )
       .eq('product_types.slug', type)
       .eq('product_translations.locale', locale)
@@ -183,21 +194,21 @@ export const getProductsByType = unstable_cache(
     return data.map(mapProduct)
   },
   ['getProductsByType'],
-  { tags: [PRODUCTS_TAG] }
+  { tags: [PRODUCTS_TAG] },
 )
 
 export const getProductBySlug = unstable_cache(
   async (slug: string, locale: string): Promise<Product | null> => {
     const supabase = await createClient()
     if (!supabase) {
-      const all = {
+      const all: Record<string, Product> = {
         ...fallbackProducts[locale]?.camp?.reduce(
           (acc, p) => ({ ...acc, [p.slug]: p }),
-          {}
+          {} as Record<string, Product>,
         ),
         ...fallbackProducts[locale]?.lodging?.reduce(
           (acc, p) => ({ ...acc, [p.slug]: p }),
-          {}
+          {} as Record<string, Product>,
         ),
       }
       return all[slug] ?? null
@@ -208,7 +219,7 @@ export const getProductBySlug = unstable_cache(
       .select(
         `id, slug, sorting, product_types!inner(slug),
        product_translations!inner(locale, name, short_description, long_description, highlights),
-       product_prices(currency, unit_amount)`
+       product_prices(currency, unit_amount)`,
       )
       .eq('slug', slug)
       .eq('product_translations.locale', locale)
@@ -222,7 +233,7 @@ export const getProductBySlug = unstable_cache(
     return mapProduct(data)
   },
   ['getProductBySlug'],
-  { tags: [PRODUCTS_TAG] }
+  { tags: [PRODUCTS_TAG] },
 )
 
 export const getBundles = unstable_cache(
@@ -237,7 +248,7 @@ export const getBundles = unstable_cache(
       .select(
         `id, slug, bundle_items(product_id, quantity),
        bundle_translations!inner(locale, name, short_description, long_description, highlights),
-       bundle_prices(currency, unit_amount)`
+       bundle_prices(currency, unit_amount)`,
       )
       .eq('bundle_translations.locale', locale)
       .eq('is_active', true)
@@ -251,14 +262,16 @@ export const getBundles = unstable_cache(
     return data.map(mapBundle)
   },
   ['getBundles'],
-  { tags: [PRODUCTS_TAG] }
+  { tags: [PRODUCTS_TAG] },
 )
 
 export const getBundleBySlug = unstable_cache(
   async (slug: string, locale: string): Promise<Bundle | null> => {
     const supabase = await createClient()
     if (!supabase) {
-      return (fallbackBundles[locale] ?? []).find((b) => b.slug === slug) ?? null
+      return (
+        (fallbackBundles[locale] ?? []).find((b) => b.slug === slug) ?? null
+      )
     }
 
     const { data, error } = await supabase
@@ -266,7 +279,7 @@ export const getBundleBySlug = unstable_cache(
       .select(
         `id, slug, bundle_items(product_id, quantity),
        bundle_translations!inner(locale, name, short_description, long_description, highlights),
-       bundle_prices(currency, unit_amount)`
+       bundle_prices(currency, unit_amount)`,
       )
       .eq('slug', slug)
       .eq('bundle_translations.locale', locale)
@@ -280,5 +293,5 @@ export const getBundleBySlug = unstable_cache(
     return mapBundle(data)
   },
   ['getBundleBySlug'],
-  { tags: [PRODUCTS_TAG] }
+  { tags: [PRODUCTS_TAG] },
 )

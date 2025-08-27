@@ -10,9 +10,8 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { ROUTES } from '@/lib/constants'
 
-const Reviews = dynamic(
-  () => import('@/features/reviews').then((m) => m.Reviews),
-  { suspense: true }
+const Reviews = dynamic(() =>
+  import('@/features/reviews').then((m) => m.Reviews),
 )
 
 export default function Home() {
@@ -27,10 +26,10 @@ export default function Home() {
     if (planesSection) {
       const headerHeight = 80
       const elementPosition = planesSection.offsetTop - headerHeight
-      
+
       window.scrollTo({
         top: elementPosition,
-        behavior: 'smooth'
+        behavior: 'smooth',
       })
     }
   }
@@ -39,10 +38,7 @@ export default function Home() {
     <main className="min-h-screen">
       <Header />
       <div id="inicio">
-        <Hero 
-          onBookNow={handleBookNow}
-          onLearnMore={handleLearnMore}
-        />
+        <Hero onBookNow={handleBookNow} onLearnMore={handleLearnMore} />
       </div>
       <div id="reservas">
         <BookingButtons />

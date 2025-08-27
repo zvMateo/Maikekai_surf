@@ -1,8 +1,8 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 
-export function getUserRole(): string | undefined {
-  const { sessionClaims } = auth()
-  return sessionClaims?.publicMetadata?.role as string | undefined
+export async function getUserRole(): Promise<string | undefined> {
+  const { sessionClaims } = await auth()
+  return (sessionClaims?.publicMetadata as any)?.role as string | undefined
 }
 
 export async function getCurrentUser() {
