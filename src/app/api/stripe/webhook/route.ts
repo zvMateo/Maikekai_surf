@@ -4,14 +4,15 @@ import { stripe } from '@/services/stripe'
 
 export async function POST(req: Request) {
   const body = await req.text()
-  const signature = headers().get('stripe-signature') ?? ''
+  const headerList = await headers()
+  const signature = headerList.get('stripe-signature') ?? ''
 
   let event
   try {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET as string
+      process.env.STRIPE_WEBHOOK_SECRET as string,
     )
   } catch (err: any) {
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 })
