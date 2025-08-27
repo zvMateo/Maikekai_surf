@@ -4,6 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { useResponsive } from '@/hooks/useResponsive'
+import { useTranslations } from 'next-intl'
 
 interface HeroProps {
   onBookNow?: () => void
@@ -12,6 +13,7 @@ interface HeroProps {
 
 export function Hero({ onBookNow, onLearnMore }: HeroProps) {
   const { isMobile } = useResponsive()
+  const t = useTranslations('hero')
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -46,7 +48,7 @@ export function Hero({ onBookNow, onLearnMore }: HeroProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          Maikekai Surf
+          {t('title')}
         </motion.h1>
 
         <motion.p
@@ -55,8 +57,7 @@ export function Hero({ onBookNow, onLearnMore }: HeroProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
         >
-          Experimenta las mejores olas de Costa Rica con nuestras clases profesionales
-          y alojamiento de lujo frente al mar.
+          {t('description')}
         </motion.p>
 
         <motion.div
@@ -71,7 +72,7 @@ export function Hero({ onBookNow, onLearnMore }: HeroProps) {
             onClick={onBookNow}
             className="w-full sm:w-auto min-w-[200px] shadow-lg"
           >
-            🏄‍♂️ Reservar Ahora
+            {t('bookNow')}
           </Button>
           
           <Button
@@ -80,7 +81,7 @@ export function Hero({ onBookNow, onLearnMore }: HeroProps) {
             onClick={onLearnMore}
             className="w-full sm:w-auto min-w-[200px] border-white text-white hover:bg-white hover:text-black shadow-lg"
           >
-            🌊 Conocer Más
+            {t('learnMore')}
           </Button>
         </motion.div>
 

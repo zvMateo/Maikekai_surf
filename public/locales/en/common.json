@@ -1,0 +1,22 @@
+{
+  "navigation": {
+    "home": "Home",
+    "surfPlans": "Surf Plans",
+    "bookings": "Booking",
+    "reviews": "Reviews",
+    "contact": "Contact"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "dashboard": "My Dashboard",
+    "profile": "My Profile",
+    "bookings": "My Bookings",
+    "admin": "Administration"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "es": "Spanish"
+  }
+}

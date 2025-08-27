@@ -1,0 +1,22 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "surfPlans": "Planes de Surf",
+    "bookings": "Reservas",
+    "reviews": "Reseñas",
+    "contact": "Contacto"
+  },
+  "auth": {
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "dashboard": "Mi Dashboard",
+    "profile": "Mi Perfil",
+    "bookings": "Mis Reservas",
+    "admin": "Administración"
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "Inglés",
+    "es": "Español"
+  }
+}

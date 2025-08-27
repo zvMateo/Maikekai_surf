@@ -1,19 +1,11 @@
-import { updateSession } from '@/services/supabase/middleware'
-import { type NextRequest } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
+import {locales, defaultLocale} from './src/i18n'
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request)
-}
+export default createMiddleware({
+  locales,
+  defaultLocale
+})
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images, icons (image files)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-  ],
+  matcher: ['/((?!_next|.*\\..*).*)']
 }
