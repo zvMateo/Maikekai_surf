@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Lock, User, ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 
 export default function AuthPage() {
