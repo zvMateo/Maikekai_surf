@@ -34,7 +34,7 @@ function NavigationLink({ href, children, onClick, className = '' }: NavigationL
   const baseClasses = "text-gray-700 hover:text-primary-600 transition-colors font-medium"
   
   const handleClick = (e: React.MouseEvent) => {
-    if (href.startsWith('#')) {
+    if (href && href.startsWith('#')) {
       e.preventDefault()
       const targetId = href.substring(1)
       const targetElement = document.getElementById(targetId)
