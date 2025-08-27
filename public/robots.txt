@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://maikekaisurf.com
+
+# Sitemaps
+Sitemap: https://maikekaisurf.com/sitemap.xml

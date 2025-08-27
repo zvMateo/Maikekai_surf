@@ -1,11 +1,21 @@
 import createMiddleware from 'next-intl/middleware'
-import {locales, defaultLocale} from './src/i18n'
+import { NextRequest } from 'next/server'
+import { locales, defaultLocale } from './src/i18n'
 
-export default createMiddleware({
+const intlMiddleware = createMiddleware({
   locales,
-  defaultLocale
+  defaultLocale,
 })
 
+export default function middleware(request: NextRequest) {
+  const response = intlMiddleware(request)
+  response.headers.set(
+    'Cache-Control',
+    'public, max-age=3600, stale-while-revalidate=86400'
+  )
+  return response
+}
+
 export const config = {
-  matcher: ['/((?!_next|.*\\..*).*)']
+  matcher: ['/((?!_next|.*\\..*).*)'],
 }
