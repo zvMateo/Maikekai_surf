@@ -1,5 +1,7 @@
 import { createClient } from '@/services/supabase/server'
 import type { Product, Bundle } from '@/types/catalog'
+import { unstable_cache } from 'next/cache'
+import { PRODUCTS_TAG } from '@/lib/cache'
 
 // Datos de respaldo en caso de no tener Supabase configurado
 const fallbackProducts: Record<string, Record<string, Product[]>> = {
@@ -154,122 +156,129 @@ function mapBundle(data: any): Bundle {
   }
 }
 
-export async function getProductsByType(
-  type: string,
-  locale: string
-): Promise<Product[]> {
-  const supabase = await createClient()
-  if (!supabase) {
-    return fallbackProducts[locale]?.[type] ?? []
-  }
-
-  const { data, error } = await supabase
-    .from('products')
-    .select(
-      `id, slug, sorting, product_types!inner(slug),
-       product_translations!inner(locale, name, short_description, long_description, highlights),
-       product_prices(currency, unit_amount)`
-    )
-    .eq('product_types.slug', type)
-    .eq('product_translations.locale', locale)
-    .eq('is_active', true)
-    .order('sorting')
-
-  if (error || !data) {
-    console.error('Error fetching products:', error)
-    return []
-  }
-
-  return data.map(mapProduct)
-}
-
-export async function getProductBySlug(
-  slug: string,
-  locale: string
-): Promise<Product | null> {
-  const supabase = await createClient()
-  if (!supabase) {
-    const all = {
-      ...fallbackProducts[locale]?.camp?.reduce(
-        (acc, p) => ({ ...acc, [p.slug]: p }),
-        {}
-      ),
-      ...fallbackProducts[locale]?.lodging?.reduce(
-        (acc, p) => ({ ...acc, [p.slug]: p }),
-        {}
-      ),
+export const getProductsByType = unstable_cache(
+  async (type: string, locale: string): Promise<Product[]> => {
+    const supabase = await createClient()
+    if (!supabase) {
+      return fallbackProducts[locale]?.[type] ?? []
     }
-    return all[slug] ?? null
-  }
 
-  const { data, error } = await supabase
-    .from('products')
-    .select(
-      `id, slug, sorting, product_types!inner(slug),
+    const { data, error } = await supabase
+      .from('products')
+      .select(
+        `id, slug, sorting, product_types!inner(slug),
        product_translations!inner(locale, name, short_description, long_description, highlights),
        product_prices(currency, unit_amount)`
-    )
-    .eq('slug', slug)
-    .eq('product_translations.locale', locale)
-    .eq('is_active', true)
-    .single()
+      )
+      .eq('product_types.slug', type)
+      .eq('product_translations.locale', locale)
+      .eq('is_active', true)
+      .order('sorting')
 
-  if (error || !data) {
-    return null
-  }
+    if (error || !data) {
+      console.error('Error fetching products:', error)
+      return []
+    }
 
-  return mapProduct(data)
-}
+    return data.map(mapProduct)
+  },
+  ['getProductsByType'],
+  { tags: [PRODUCTS_TAG] }
+)
 
-export async function getBundles(locale: string): Promise<Bundle[]> {
-  const supabase = await createClient()
-  if (!supabase) {
-    return fallbackBundles[locale] ?? []
-  }
+export const getProductBySlug = unstable_cache(
+  async (slug: string, locale: string): Promise<Product | null> => {
+    const supabase = await createClient()
+    if (!supabase) {
+      const all = {
+        ...fallbackProducts[locale]?.camp?.reduce(
+          (acc, p) => ({ ...acc, [p.slug]: p }),
+          {}
+        ),
+        ...fallbackProducts[locale]?.lodging?.reduce(
+          (acc, p) => ({ ...acc, [p.slug]: p }),
+          {}
+        ),
+      }
+      return all[slug] ?? null
+    }
 
-  const { data, error } = await supabase
-    .from('bundles')
-    .select(
-      `id, slug, bundle_items(product_id, quantity),
+    const { data, error } = await supabase
+      .from('products')
+      .select(
+        `id, slug, sorting, product_types!inner(slug),
+       product_translations!inner(locale, name, short_description, long_description, highlights),
+       product_prices(currency, unit_amount)`
+      )
+      .eq('slug', slug)
+      .eq('product_translations.locale', locale)
+      .eq('is_active', true)
+      .single()
+
+    if (error || !data) {
+      return null
+    }
+
+    return mapProduct(data)
+  },
+  ['getProductBySlug'],
+  { tags: [PRODUCTS_TAG] }
+)
+
+export const getBundles = unstable_cache(
+  async (locale: string): Promise<Bundle[]> => {
+    const supabase = await createClient()
+    if (!supabase) {
+      return fallbackBundles[locale] ?? []
+    }
+
+    const { data, error } = await supabase
+      .from('bundles')
+      .select(
+        `id, slug, bundle_items(product_id, quantity),
        bundle_translations!inner(locale, name, short_description, long_description, highlights),
        bundle_prices(currency, unit_amount)`
-    )
-    .eq('bundle_translations.locale', locale)
-    .eq('is_active', true)
-    .order('created_at')
+      )
+      .eq('bundle_translations.locale', locale)
+      .eq('is_active', true)
+      .order('created_at')
 
-  if (error || !data) {
-    console.error('Error fetching bundles:', error)
-    return []
-  }
+    if (error || !data) {
+      console.error('Error fetching bundles:', error)
+      return []
+    }
 
-  return data.map(mapBundle)
-}
+    return data.map(mapBundle)
+  },
+  ['getBundles'],
+  { tags: [PRODUCTS_TAG] }
+)
 
-export async function getBundleBySlug(
-  slug: string,
-  locale: string
-): Promise<Bundle | null> {
-  const supabase = await createClient()
-  if (!supabase) {
-    return (fallbackBundles[locale] ?? []).find((b) => b.slug === slug) ?? null
-  }
+export const getBundleBySlug = unstable_cache(
+  async (slug: string, locale: string): Promise<Bundle | null> => {
+    const supabase = await createClient()
+    if (!supabase) {
+      return (fallbackBundles[locale] ?? []).find((b) => b.slug === slug) ?? null
+    }
 
-  const { data, error } = await supabase
-    .from('bundles')
-    .select(
-      `id, slug, bundle_items(product_id, quantity),
+    const { data, error } = await supabase
+      .from('bundles')
+      .select(
+        `id, slug, bundle_items(product_id, quantity),
        bundle_translations!inner(locale, name, short_description, long_description, highlights),
        bundle_prices(currency, unit_amount)`
-    )
-    .eq('slug', slug)
-    .eq('bundle_translations.locale', locale)
-    .eq('is_active', true)
-    .single()
+      )
+      .eq('slug', slug)
+      .eq('bundle_translations.locale', locale)
+      .eq('is_active', true)
+      .single()
 
-  if (error || !data) {
-    return null
-  }
+    if (error || !data) {
+      return null
+    }
 
-  return mapBundle(data)
-}
+    return mapBundle(data)
+  },
+  ['getBundleBySlug'],
+  { tags: [PRODUCTS_TAG] }
+)

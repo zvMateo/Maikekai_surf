@@ -1,5 +1,6 @@
 import { getProductBySlug } from '@/features/catalog/services/products'
 import { notFound } from 'next/navigation'
+import { ProductSeo } from '@/features/catalog/components/ProductSeo'
 
 export const revalidate = 3600
 
@@ -13,6 +14,7 @@ export default async function AccommodationDetail({
 
   return (
     <section className="container mx-auto py-10">
+      <ProductSeo product={product} />
       <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
       {product.longDescription && <p className="mb-4">{product.longDescription}</p>}
       {product.highlights.length > 0 && (

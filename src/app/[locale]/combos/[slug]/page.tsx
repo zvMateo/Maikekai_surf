@@ -1,5 +1,6 @@
 import { getBundleBySlug } from '@/features/catalog/services/products'
 import { notFound } from 'next/navigation'
+import { ProductSeo } from '@/features/catalog/components/ProductSeo'
 
 export const revalidate = 3600
 
@@ -13,6 +14,7 @@ export default async function ComboDetail({
 
   return (
     <section className="container mx-auto py-10">
+      <ProductSeo product={bundle} />
       <h1 className="text-3xl font-bold mb-4">{bundle.name}</h1>
       {bundle.longDescription && <p className="mb-4">{bundle.longDescription}</p>}
       {bundle.highlights.length > 0 && (

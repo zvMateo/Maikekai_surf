@@ -4,6 +4,7 @@ import '../globals.css'
 import { AuthProvider } from '@/features/auth'
 import { CartProvider } from '@/features/cart'
 import { PerformanceWidget } from '@/components/ui/PerformanceWidget'
+import { Seo } from '@/components/layout'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -94,6 +95,7 @@ export default async function RootLayout({
           <link rel="manifest" href="/site.webmanifest" />
         </head>
         <body className={inter.className} suppressHydrationWarning={true}>
+          <Seo />
           <NextIntlClientProvider locale={locale} messages={messages}>
             <AuthProvider>
               <CartProvider>

@@ -1,13 +1,19 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 import { Hero } from '@/features/hero'
 import { BookingButtons } from '@/features/booking'
-import { Reviews } from '@/features/reviews'
 import { SurfPlans } from '@/features/surf-plans'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import { ROUTES } from '@/lib/constants'
+
+const Reviews = dynamic(
+  () => import('@/features/reviews').then((m) => m.Reviews),
+  { suspense: true }
+)
 
 export default function Home() {
   const router = useRouter()
@@ -45,7 +51,9 @@ export default function Home() {
         <SurfPlans />
       </div>
       <div id="reseñas">
-        <Reviews />
+        <Suspense fallback={<p>Loading reviews...</p>}>
+          <Reviews />
+        </Suspense>
       </div>
       <div id="contacto">
         <Footer />
