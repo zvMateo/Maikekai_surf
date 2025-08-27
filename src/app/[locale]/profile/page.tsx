@@ -3,6 +3,7 @@
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useLocale } from 'next-intl'
 import { motion } from 'framer-motion'
 import { User, Calendar, Star, Settings, LogOut } from 'lucide-react'
 import Link from 'next/link'
@@ -10,12 +11,13 @@ import Link from 'next/link'
 export default function ProfilePage() {
   const { user, profile, loading, signOut } = useAuth()
   const router = useRouter()
+  const locale = useLocale()
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/auth')
+      router.push(`/${locale}/auth`)
     }
-  }, [user, loading, router])
+  }, [user, loading, router, locale])
 
   if (loading) {
     return (

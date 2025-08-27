@@ -3,19 +3,28 @@
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useLocale } from 'next-intl'
 import { motion } from 'framer-motion'
-import { Calendar, MapPin, Clock, DollarSign, User, ArrowLeft } from 'lucide-react'
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  DollarSign,
+  User,
+  ArrowLeft,
+} from 'lucide-react'
 import Link from 'next/link'
 
 export default function BookingsPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const locale = useLocale()
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/auth')
+      router.push(`/${locale}/auth`)
     }
-  }, [user, loading, router])
+  }, [user, loading, router, locale])
 
   if (loading) {
     return (
@@ -34,7 +43,7 @@ export default function BookingsPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center mb-8">
-          <Link 
+          <Link
             href="/profile"
             className="flex items-center text-primary-600 hover:text-primary-700 transition-colors mr-4"
           >
@@ -55,10 +64,10 @@ export default function BookingsPage() {
             No tienes reservas aún
           </h2>
           <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            ¡Es hora de planear tu aventura de surf en Costa Rica! 
-            Explora nuestros planes y reserva tu experiencia perfecta.
+            ¡Es hora de planear tu aventura de surf en Costa Rica! Explora
+            nuestros planes y reserva tu experiencia perfecta.
           </p>
-          
+
           <div className="space-y-4">
             <Link
               href="/#planes"
@@ -68,7 +77,10 @@ export default function BookingsPage() {
             </Link>
             <div className="text-sm text-gray-500">
               <p>¿Necesitas ayuda para elegir?</p>
-              <Link href="/#contacto" className="text-primary-600 hover:text-primary-700">
+              <Link
+                href="/#contacto"
+                className="text-primary-600 hover:text-primary-700"
+              >
                 Contáctanos por WhatsApp
               </Link>
             </div>

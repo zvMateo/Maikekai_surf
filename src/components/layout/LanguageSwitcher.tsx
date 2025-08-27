@@ -1,7 +1,8 @@
 'use client'
 
-import {useLocale, useTranslations} from 'next-intl'
-import {usePathname, useRouter} from 'next/navigation'
+import { useLocale, useTranslations } from 'next-intl'
+import { usePathname, useRouter } from 'next/navigation'
+import { setCookie } from 'cookies-next'
 
 export default function LanguageSwitcher() {
   const t = useTranslations('common.language')
@@ -10,8 +11,10 @@ export default function LanguageSwitcher() {
   const pathname = usePathname()
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLocale = e.target.value
+    setCookie('NEXT_LOCALE', newLocale)
     const segments = pathname.split('/')
-    segments[1] = e.target.value
+    segments[1] = newLocale
     router.push(segments.join('/'))
   }
 

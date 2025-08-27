@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
+import { locales, defaultLocale } from '@/i18n'
 
 export async function updateSession(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -27,26 +28,24 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const supabase = createServerClient(
-    supabaseUrl,
-    supabaseKey,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
-        },
+  const supabase = createServerClient(supabaseUrl, supabaseKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll()
       },
-    }
-  )
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) =>
+          request.cookies.set(name, value),
+        )
+        supabaseResponse = NextResponse.next({
+          request,
+        })
+        cookiesToSet.forEach(({ name, value, options }) =>
+          supabaseResponse.cookies.set(name, value, options),
+        )
+      },
+    },
+  })
 
   // IMPORTANT: Avoid writing any logic between createServerClient and
   // supabase.auth.getUser(). A simple mistake could make it very hard to debug
@@ -58,12 +57,17 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
+    !request.nextUrl.pathname.endsWith('/auth') &&
     !request.nextUrl.pathname.startsWith('/api/auth')
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
-    url.pathname = '/auth'
+    const [, pathLocale] = request.nextUrl.pathname.split('/')
+    const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value
+    const locale = locales.includes(pathLocale as any)
+      ? pathLocale
+      : (cookieLocale ?? defaultLocale)
+    url.pathname = `/${locale}/auth`
     return NextResponse.redirect(url)
   }
 
