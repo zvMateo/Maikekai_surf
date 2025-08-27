@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Poppins } from 'next/font/google'
 import '../globals.css'
 import { AuthProvider } from '@/features/auth'
+import { CartProvider } from '@/features/cart'
 import { PerformanceWidget } from '@/components/ui/PerformanceWidget'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
@@ -95,8 +96,10 @@ export default async function RootLayout({
         <body className={inter.className} suppressHydrationWarning={true}>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <AuthProvider>
-              {children}
-              <PerformanceWidget />
+              <CartProvider>
+                {children}
+                <PerformanceWidget />
+              </CartProvider>
             </AuthProvider>
           </NextIntlClientProvider>
         </body>
