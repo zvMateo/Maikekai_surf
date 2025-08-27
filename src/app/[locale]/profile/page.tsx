@@ -67,11 +67,11 @@ export default function ProfilePage() {
             </div>
             <div className="ml-6">
               <h1 className="text-2xl font-bold text-gray-900">
-                {profile?.full_name || user.email}
+                {profile?.full_name || user.primaryEmailAddress?.emailAddress}
               </h1>
-              <p className="text-gray-600">{user.email}</p>
+              <p className="text-gray-600">{user.primaryEmailAddress?.emailAddress}</p>
               <p className="text-sm text-gray-500">
-                Miembro desde {new Date(user.created_at).toLocaleDateString('es-ES')}
+                Miembro desde {new Date(user.createdAt).toLocaleDateString('es-ES')}
               </p>
             </div>
           </div>

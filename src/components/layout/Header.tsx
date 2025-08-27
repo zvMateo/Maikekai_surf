@@ -2,14 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, Waves, User, LogOut } from 'lucide-react'
+import { Menu, X, Waves } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAuth } from '@/features/auth/hooks/useAuth'
 import { Button } from '@/components/ui/Button'
-import { useResponsive } from '@/hooks/useResponsive'
 import { ANIMATION_DEFAULTS, APP_CONFIG } from '@/lib/constants'
 import { useTranslations } from 'next-intl'
 import LanguageSwitcher from './LanguageSwitcher'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 interface NavItem {
   href: string
@@ -33,99 +32,26 @@ interface NavigationLinkProps {
 }
 
 function NavigationLink({ href, children, onClick, className = '' }: NavigationLinkProps) {
-  const baseClasses = "text-gray-700 hover:text-primary-600 transition-colors font-medium"
-  
+  const baseClasses = 'text-gray-700 hover:text-primary-600 transition-colors font-medium'
+
   const handleClick = (e: React.MouseEvent) => {
     if (href && href.startsWith('#')) {
       e.preventDefault()
       const targetId = href.substring(1)
       const targetElement = document.getElementById(targetId)
       if (targetElement) {
-        const headerHeight = 80 // Altura aproximada del header fijo
+        const headerHeight = 80
         const elementPosition = targetElement.offsetTop - headerHeight
-        window.scrollTo({
-          top: elementPosition,
-          behavior: 'smooth'
-        })
+        window.scrollTo({ top: elementPosition, behavior: 'smooth' })
       }
     }
     onClick?.()
   }
-  
+
   return (
-    <Link 
-      href={href}
-      className={`${baseClasses} ${className}`}
-      onClick={handleClick}
-    >
+    <Link href={href} className={`${baseClasses} ${className}`} onClick={handleClick}>
       {children}
     </Link>
-  )
-}
-
-interface UserMenuProps {
-  isOpen: boolean
-  onClose: () => void
-}
-
-function UserMenu({ isOpen, onClose }: UserMenuProps) {
-  const { user, signOut, profile } = useAuth()
-  const t = useTranslations('common')
-
-  if (!user) return null
-
-  const userMenuItems = [
-    { href: '/dashboard', label: 'auth.dashboard' },
-    { href: '/profile', label: 'auth.profile' },
-    { href: '/bookings', label: 'auth.bookings' },
-  ]
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: ANIMATION_DEFAULTS.duration }}
-          className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
-        >
-          {userMenuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
-              onClick={onClose}
-            >
-              {t(item.label)}
-            </Link>
-          ))}
-          
-          {profile?.role === 'admin' && (
-            <Link
-              href="/admin"
-              className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
-              onClick={onClose}
-            >
-              {t('auth.admin')}
-            </Link>
-          )}
-          
-          <hr className="my-2" />
-          
-          <button
-            onClick={() => {
-              signOut()
-              onClose()
-            }}
-            className="flex items-center space-x-2 w-full px-4 py-2 text-red-600 hover:bg-red-50 transition-colors text-left"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>{t('auth.signOut')}</span>
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
   )
 }
 
@@ -135,7 +61,6 @@ interface MobileMenuProps {
 }
 
 function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
-  const { user, signOut, profile } = useAuth()
   const t = useTranslations('common')
 
   return (
@@ -160,59 +85,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                 {t(item.label)}
               </NavigationLink>
             ))}
-            
-            {user ? (
-              <>
-                <div className="border-t border-gray-200 my-2"></div>
-                <div className="px-4 py-2 text-sm text-gray-500">
-                  {profile?.full_name || user.email}
-                </div>
-                
-                <NavigationLink
-                  href="/dashboard"
-                  onClick={onClose}
-                  className="block px-4 py-2 hover:bg-primary-50"
-                >
-                  {t('auth.dashboard')}
-                </NavigationLink>
-
-                <NavigationLink
-                  href="/profile"
-                  onClick={onClose}
-                  className="block px-4 py-2 hover:bg-primary-50"
-                >
-                  {t('auth.profile')}
-                </NavigationLink>
-
-                <NavigationLink
-                  href="/bookings"
-                  onClick={onClose}
-                  className="block px-4 py-2 hover:bg-primary-50"
-                >
-                  {t('auth.bookings')}
-                </NavigationLink>
-                
-                {profile?.role === 'admin' && (
-                  <NavigationLink
-                    href="/admin"
-                    onClick={onClose}
-                    className="block px-4 py-2 hover:bg-primary-50"
-                  >
-                    {t('auth.admin')}
-                  </NavigationLink>
-                )}
-                
-                <button
-                  onClick={() => {
-                    signOut()
-                    onClose()
-                  }}
-                  className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors font-medium"
-                >
-                  {t('auth.signOut')}
-                </button>
-              </>
-            ) : (
+            <SignedOut>
               <div className="px-4">
                 <Button
                   variant="primary"
@@ -226,7 +99,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                   {t('auth.signIn')}
                 </Button>
               </div>
-            )}
+            </SignedOut>
           </div>
         </motion.div>
       )}
@@ -237,10 +110,7 @@ function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 function Logo() {
   return (
     <Link href="/" className="flex items-center space-x-2">
-      <motion.div 
-        whileHover={{ scale: 1.05 }}
-        className="bg-primary-500 p-2 rounded-full"
-      >
+      <motion.div whileHover={{ scale: 1.05 }} className="bg-primary-500 p-2 rounded-full">
         <Waves className="h-6 w-6 text-white" />
       </motion.div>
       <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-800 to-primary-600 bg-clip-text text-transparent">
@@ -252,15 +122,7 @@ function Logo() {
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const { user, profile } = useAuth()
-  const { isMobile } = useResponsive()
   const t = useTranslations('common')
-
-  const closeMenus = () => {
-    setIsMenuOpen(false)
-    setIsUserMenuOpen(false)
-  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-100">
@@ -276,35 +138,16 @@ export default function Header() {
             ))}
 
             <LanguageSwitcher />
-            
-            {user ? (
-              <div className="relative">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 bg-primary-100 hover:bg-primary-200 text-primary-700"
-                >
-                  <User className="h-4 w-4" />
-                  <span className="max-w-[120px] truncate">
-                    {profile?.full_name || user.email}
-                  </span>
-                </Button>
-                
-                <UserMenu 
-                  isOpen={isUserMenuOpen} 
-                  onClose={() => setIsUserMenuOpen(false)} 
-                />
-              </div>
-            ) : (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => window.location.href = '/auth'}
-              >
+
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+
+            <SignedOut>
+              <Button variant="primary" size="sm" onClick={() => (window.location.href = '/auth')}>
                 {t('auth.signIn')}
               </Button>
-            )}
+            </SignedOut>
           </div>
 
           <Button
@@ -317,7 +160,7 @@ export default function Header() {
           </Button>
         </div>
 
-        <MobileMenu isOpen={isMenuOpen} onClose={closeMenus} />
+        <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
       </nav>
     </header>
   )
