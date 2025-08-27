@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "home": "Home",
+    "plans": "Surf Plans",
+    "bookings": "Bookings",
+    "reviews": "Reviews",
+    "contact": "Contact"
+  },
+  "userMenu": {
+    "dashboard": "My Dashboard",
+    "profile": "My Profile",
+    "bookings": "My Bookings",
+    "admin": "Admin",
+    "signOut": "Sign out"
+  },
+  "signIn": "Sign in",
+  "language": "Language"
+}
