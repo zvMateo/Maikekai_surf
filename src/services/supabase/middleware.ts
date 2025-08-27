@@ -2,13 +2,30 @@ import { createServerClient } from '@supabase/ssr'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (
+    !supabaseUrl ||
+    supabaseUrl === 'your_supabase_project_url' ||
+    !supabaseUrl.startsWith('http')
+  ) {
+    console.warn('Missing or invalid NEXT_PUBLIC_SUPABASE_URL')
+    return NextResponse.next({ request })
+  }
+
+  if (!supabaseKey) {
+    console.warn('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({
     request,
   })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseKey,
     {
       cookies: {
         getAll() {
