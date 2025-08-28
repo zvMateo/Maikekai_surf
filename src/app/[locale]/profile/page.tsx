@@ -33,7 +33,7 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     await signOut()
-    router.push('/')
+    router.push(`/${locale}`)
   }
 
   return (
@@ -42,7 +42,7 @@ export default function ProfilePage() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <Link
-            href="/"
+            href={`/${locale}`}
             className="flex items-center text-primary-600 hover:text-primary-700 transition-colors"
           >
             <User className="h-5 w-5 mr-2" />
@@ -110,7 +110,7 @@ export default function ProfilePage() {
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
           <Link
-            href="/bookings"
+            href={`/${locale}/bookings`}
             className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow group"
           >
             <Calendar className="h-8 w-8 text-primary-600 mb-4 group-hover:scale-110 transition-transform" />
@@ -121,7 +121,7 @@ export default function ProfilePage() {
           </Link>
 
           <Link
-            href="/dashboard"
+            href={`/${locale}/dashboard`}
             className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow group"
           >
             <Settings className="h-8 w-8 text-secondary-600 mb-4 group-hover:scale-110 transition-transform" />

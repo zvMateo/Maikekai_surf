@@ -44,7 +44,7 @@ export default function BookingsPage() {
         {/* Header */}
         <div className="flex items-center mb-8">
           <Link
-            href="/profile"
+            href={`/${locale}/profile`}
             className="flex items-center text-primary-600 hover:text-primary-700 transition-colors mr-4"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
@@ -70,7 +70,7 @@ export default function BookingsPage() {
 
           <div className="space-y-4">
             <Link
-              href="/#planes"
+              href={`/${locale}/#planes`}
               className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
             >
               Ver Planes de Surf
@@ -78,7 +78,7 @@ export default function BookingsPage() {
             <div className="text-sm text-gray-500">
               <p>¿Necesitas ayuda para elegir?</p>
               <Link
-                href="/#contacto"
+                href={`/${locale}/#contacto`}
                 className="text-primary-600 hover:text-primary-700"
               >
                 Contáctanos por WhatsApp
