@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext } from 'react'
+import { useTranslations } from 'next-intl'
 import { useUser, useClerk } from '@clerk/nextjs'
 import type { UserResource } from '@clerk/types'
 
@@ -19,10 +20,11 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser()
   const { signOut } = useClerk()
+  const t = useTranslations('auth')
 
   const profile = {
     full_name: user?.fullName || undefined,
-    role: (user?.publicMetadata?.role as string) || 'user',
+    role: (user?.publicMetadata?.role as string) || t('user'),
   }
 
   const value: AuthContextType = {

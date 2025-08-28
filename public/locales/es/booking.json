@@ -1,0 +1,50 @@
+{
+  "platforms": {
+    "booking": {
+      "description": "Reserva directa con cancelación gratuita",
+      "discount": "10% OFF"
+    },
+    "airbnb": {
+      "description": "Experiencia local auténtica",
+      "discount": "Huésped frecuente"
+    },
+    "hostelworld": {
+      "description": "Para mochileros y viajeros jóvenes",
+      "discount": "Hasta 20% OFF"
+    }
+  },
+  "bookNow": "Reservar Ahora",
+  "whatsapp": {
+    "popular": "🔥 Popular",
+    "title": "WhatsApp Directo",
+    "description": "Contacto directo para planes personalizados y descuentos especiales",
+    "button": "💬 Chatear Ahora",
+    "message": "¡Hola! Me interesa conocer más sobre los planes de surf + hospedaje en Maikekai Surf. ¿Podrían darme más información?"
+  },
+  "specialOffer": {
+    "title": "🏄‍♂️ Oferta Especial: Surf + Hospedaje",
+    "description1": "Reserva 5 noches y obtén 2 clases de surf GRATIS.",
+    "description2": "Incluye tabla, traje de neopreno y instructor certificado.",
+    "viewDetails": "Ver Detalles",
+    "bookOffer": "🎯 Reservar Oferta"
+  },
+  "section": {
+    "heading": {
+      "prefix": "Reserva tu",
+      "highlight": "Estadía"
+    },
+    "description1": "Elige la plataforma que prefieras para reservar tu hospedaje.",
+    "description2": "También puedes contactarnos directamente por WhatsApp para planes personalizados."
+  },
+  "form": {
+    "noAvailability": "No hay disponibilidad suficiente",
+    "productLabel": "Producto",
+    "productPlaceholder": "Selecciona un producto",
+    "variantLabel": "Variante",
+    "variantPlaceholder": "Selecciona una variante",
+    "startDateLabel": "Fecha de inicio",
+    "endDateLabel": "Fecha de fin",
+    "personsLabel": "Personas",
+    "addToCart": "Agregar al carrito"
+  }
+}

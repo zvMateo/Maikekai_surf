@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { useCart } from '@/features/cart/hooks/useCart'
 import { addBookingToCart } from '../services/availability'
+import { useTranslations } from 'next-intl'
 
 interface BookingVariant {
   id: string
@@ -23,6 +24,7 @@ interface BookingFormProps {
 
 export function BookingForm({ products }: BookingFormProps) {
   const { addItem } = useCart()
+  const t = useTranslations('booking')
   const [productId, setProductId] = useState('')
   const [variantId, setVariantId] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -39,7 +41,7 @@ export function BookingForm({ products }: BookingFormProps) {
       addItem,
     )
     if (!success) {
-      setError('No hay disponibilidad suficiente')
+      setError(t('form.noAvailability'))
       return
     }
     setError(null)
@@ -49,7 +51,7 @@ export function BookingForm({ products }: BookingFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Producto
+          {t('form.productLabel')}
         </label>
         <select
           value={productId}
@@ -59,7 +61,7 @@ export function BookingForm({ products }: BookingFormProps) {
           }}
           className="w-full border rounded-md px-3 py-2"
         >
-          <option value="">Selecciona un producto</option>
+          <option value="">{t('form.productPlaceholder')}</option>
           {products.map((p) => (
             <option key={p.id} value={p.id}>
               {p.name}
@@ -71,14 +73,14 @@ export function BookingForm({ products }: BookingFormProps) {
       {selectedProduct?.variants && selectedProduct.variants.length > 0 && (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Variante
+            {t('form.variantLabel')}
           </label>
           <select
             value={variantId}
             onChange={(e) => setVariantId(e.target.value)}
             className="w-full border rounded-md px-3 py-2"
           >
-            <option value="">Selecciona una variante</option>
+            <option value="">{t('form.variantPlaceholder')}</option>
             {selectedProduct.variants.map((v) => (
               <option key={v.id} value={v.id}>
                 {v.name}
@@ -90,26 +92,26 @@ export function BookingForm({ products }: BookingFormProps) {
 
       <Input
         type="date"
-        label="Fecha de inicio"
+        label={t('form.startDateLabel')}
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
       />
       <Input
         type="date"
-        label="Fecha de fin"
+        label={t('form.endDateLabel')}
         value={endDate}
         onChange={(e) => setEndDate(e.target.value)}
       />
       <Input
         type="number"
-        label="Personas"
+        label={t('form.personsLabel')}
         min={1}
         value={persons}
         onChange={(e) => setPersons(Number(e.target.value))}
       />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <Button type="submit" className="w-full">
-        Agregar al carrito
+        {t('form.addToCart')}
       </Button>
     </form>
   )

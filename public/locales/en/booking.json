@@ -1,0 +1,50 @@
+{
+  "platforms": {
+    "booking": {
+      "description": "Direct booking with free cancellation",
+      "discount": "10% OFF"
+    },
+    "airbnb": {
+      "description": "Authentic local experience",
+      "discount": "Frequent guest"
+    },
+    "hostelworld": {
+      "description": "For backpackers and young travelers",
+      "discount": "Up to 20% OFF"
+    }
+  },
+  "bookNow": "Book Now",
+  "whatsapp": {
+    "popular": "🔥 Popular",
+    "title": "Direct WhatsApp",
+    "description": "Direct contact for personalized plans and special discounts",
+    "button": "💬 Chat Now",
+    "message": "Hi! I'm interested in learning more about the surf + lodging plans at Maikekai Surf. Could you give me more information?"
+  },
+  "specialOffer": {
+    "title": "🏄‍♂️ Special Offer: Surf + Lodging",
+    "description1": "Book 5 nights and get 2 surf lessons FREE.",
+    "description2": "Includes board, wetsuit and certified instructor.",
+    "viewDetails": "View Details",
+    "bookOffer": "🎯 Book Offer"
+  },
+  "section": {
+    "heading": {
+      "prefix": "Book your",
+      "highlight": "Stay"
+    },
+    "description1": "Choose your preferred platform to book your lodging.",
+    "description2": "You can also contact us directly via WhatsApp for customized plans."
+  },
+  "form": {
+    "noAvailability": "Not enough availability",
+    "productLabel": "Product",
+    "productPlaceholder": "Select a product",
+    "variantLabel": "Variant",
+    "variantPlaceholder": "Select a variant",
+    "startDateLabel": "Start date",
+    "endDateLabel": "End date",
+    "personsLabel": "Persons",
+    "addToCart": "Add to cart"
+  }
+}
