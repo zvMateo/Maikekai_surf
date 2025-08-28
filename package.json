@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "set NODE_OPTIONS=--max-old-space-size=4096 && next dev",
-    "build": "set NODE_OPTIONS=--max-old-space-size=4096 && next build",
-    "build:memory": "set NODE_OPTIONS=--max-old-space-size=8192 && next build",
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next dev",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next build",
+    "build:memory": "cross-env NODE_OPTIONS=--max-old-space-size=8192 next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
@@ -37,6 +37,7 @@
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "@playwright/test": "^1.41.2",
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.45",

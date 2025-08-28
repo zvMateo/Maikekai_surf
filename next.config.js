@@ -22,12 +22,10 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
-  
+
   // Configuración optimizada para mejor performance
-  experimental: {
-    optimizeServerReact: true,
-  },
-  
+  // experimental optimizations removed if obsolete in current Next.js
+
   // Headers para optimizar assets estáticos
   async headers() {
     return [
@@ -49,24 +47,24 @@ const nextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
-  
+
   // Configuración de build optimizada
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
-  
+
   // Configuración del directorio raíz
   outputFileTracingRoot: __dirname,
-  
+
   // Configuración de memoria y performance
   webpack: (config, { dev, isServer }) => {
     // Optimización de memoria
     config.cache = {
       type: 'memory',
     }
-    
+
     // Configuración específica para desarrollo
     if (dev) {
       config.watchOptions = {
@@ -75,7 +73,7 @@ const nextConfig = {
         ignored: ['node_modules/**', '.next/**'],
       }
     }
-    
+
     // Optimizaciones de producción
     if (!dev && !isServer) {
       config.optimization.splitChunks = {
@@ -95,16 +93,16 @@ const nextConfig = {
         },
       }
     }
-    
+
     return config
   },
-  
+
   // Optimización del bundle
   productionBrowserSourceMaps: false,
-  
-  // Configuración de TypeScript optimizada
+
+  // Configuración de TypeScript estricta en build
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
 }
 
