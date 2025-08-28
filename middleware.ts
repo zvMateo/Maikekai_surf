@@ -8,8 +8,7 @@ const intlMiddleware = createMiddleware({
 })
 
 export default function middleware(request: NextRequest) {
-  const locale = request.cookies.get('NEXT_LOCALE')?.value
-  const response = intlMiddleware(request, { locale })
+  const response = intlMiddleware(request)
   response.headers.set(
     'Cache-Control',
     'public, max-age=3600, stale-while-revalidate=86400',
